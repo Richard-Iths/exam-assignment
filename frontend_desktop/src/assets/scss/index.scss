@@ -1,0 +1,14 @@
+@import "colors", "fontSizes";
+:global(*) {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:global(html) {
+  font-size: 62.5%;
+}
+:global(body) {
+  font-size: 1.6em;
+  font-family: "Alegreya Sans", sans-serif;
+  line-height: 1.8;
+}

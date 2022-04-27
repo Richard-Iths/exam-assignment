@@ -1,0 +1,70 @@
+$colors: (
+  primary: #f5f5f5,
+  primaryDark: #212121,
+  accent: #ffcc80,
+  accentDark: #263238,
+  utilityInfo: #b3e5fc,
+  utilityDanger: #bf360c,
+  utilitySuccess: #c5e1a5,
+  utilityTableColumn: #e7e6e6,
+);
+
+@function getColor($color) {
+  @return map-get($map: $colors, $key: $color);
+}
+
+:global(.primary-color) {
+  background-color: getColor("primary");
+  color: getColor("primaryDark");
+}
+:global(.primary-font-color) {
+  color: getColor("primary");
+}
+:global(.primary-color--dark) {
+  background-color: getColor(primaryDark);
+  color: getColor("primary");
+}
+:global(.primary-color--dark-modal) {
+  background-color: rgba($color: getColor("primaryDark"), $alpha: 0.5);
+  color: getColor("primary");
+}
+:global(.accent-color) {
+  background-color: getColor("accent");
+  color: getColor("primaryDark");
+}
+:global(.accent-color--dark) {
+  background-color: getColor("accentDark");
+  color: getColor("primary");
+}
+:global(.utility-color--info) {
+  background-color: getColor("utilityInfo");
+  color: getColor("primaryDark");
+}
+
+:global(.utility-color--danger) {
+  background-color: getColor("utilityDanger");
+  color: getColor("primary");
+}
+:global(.utility-color--success) {
+  background-color: getColor("utilitySuccess");
+  color: getColor("primaryDark");
+}
+:global(input::placeholder) {
+  color: getColor("primaryDark");
+}
+:global(.odd-background:nth-child(odd)) {
+  background-color: getColor("utilityTableColumn");
+}
+:global(.hover--dark:hover) {
+  background-color: getColor("accentDark");
+  color: getColor("primary");
+}
+:global(.hover--dark-color:hover) {
+  color: getColor("accentDark");
+}
+:global(.hover--light-color:hover) {
+  color: getColor("primary");
+}
+:global(.icon-color--info) {
+  color: getColor("utilityInfo");
+}

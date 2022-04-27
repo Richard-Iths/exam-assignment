@@ -1,0 +1,2 @@
+[global.databases]
+users_service = {url="host=localhost user=postgres password=example port=5001 dbname=users_service"}

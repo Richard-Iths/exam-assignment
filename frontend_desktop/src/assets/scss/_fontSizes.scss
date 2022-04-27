@@ -1,0 +1,42 @@
+$fontHeaders: (
+  xxl: 4em,
+  xl: 3.375em,
+  x: 3em,
+  r: 2.5em,
+  s: 2em,
+  xs: 1.5em,
+  xxs: 1.1em,
+);
+
+@each $name, $size in $fontHeaders {
+  :global(.font-heading--#{$name}) {
+    font-size: $size;
+    font-family: "Source Sans Pro", serif;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+  :global(.font-heading--#{name}-bolder) {
+    font-size: $size;
+    font-family: "Source Sans Pro", serif;
+    font-weight: 800;
+  }
+}
+
+$fontBody: (
+  xxl: 2em,
+  xl: 1.5em,
+  x: 1.2em,
+  r: 1em,
+  s: 0.8em,
+);
+
+@each $name, $size in $fontBody {
+  :global(.font-text--#{$name}) {
+    font-size: $size;
+    font-family: "Alegreya Sans", sans-serif;
+  }
+}
+
+:global(.font--ingress) {
+  font-style: italic;
+}

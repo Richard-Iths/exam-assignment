@@ -1,0 +1,92 @@
+version: '3.9'
+
+services:
+  db: 
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5001:5432
+    volumes:
+      - ./data/:/docker-entrypoint-initdb.d
+    container_name: postgres_db
+    
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 5000:8080
+
+  users_service:
+    build: 
+      context: ./users_service
+      dockerfile: Dockerfile.dev
+    environment:
+      - ROCKET_ADDRESS=0.0.0.0
+      - ROCKET_DATABASES={users_service={url="postgres://postgres:example@db/users_service"}}
+      - DB_MIGRATION_URI=postgres://postgres:example@db/users_service
+    volumes:
+      - ./users_service/:/app
+      - /app/target
+    depends_on:
+      - db
+    restart: "unless-stopped"
+    container_name: users_service
+
+  auth_service: 
+    build: 
+      context: ./auth_service 
+      dockerfile: Dockerfile.dev
+    environment:
+      - PGHOST=db
+      - PGUSER=postgres
+      - PGDATABASE=users_service
+      - PGPASSWORD=example
+      - PGPORT=5432
+      - PORT=4001
+    volumes:
+      - ./auth_service/:/app 
+      - /app/node_modules
+    depends_on:
+      - db 
+    restart: "unless-stopped"
+    container_name: auth_service
+
+  orders_service: 
+    build: 
+      context: ./orders_service 
+      dockerfile: Dockerfile.dev
+    environment:
+      - PGHOST=db
+      - PGUSER=postgres
+      - PGDATABASE=orders_service
+      - PGPASSWORD=example
+      - PGPORT=5432
+      - PORT=4002
+    volumes:
+      - ./orders_service/:/app 
+      - /app/node_modules
+    depends_on:
+      - db 
+    restart: "unless-stopped"
+    container_name: orders_service
+    ports:
+      - 4002:4002
+  
+  nginx: 
+    image: nginx
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/
+      # - ./ssl/:/etc/ssl
+    ports:
+      # - 7000:443
+      - 7001:80
+    environment:
+      - NGINX_PORT=80
+    depends_on:
+      - users_service
+      - auth_service
+
+
+

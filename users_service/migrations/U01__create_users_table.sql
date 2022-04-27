@@ -1,0 +1,11 @@
+CREATE TYPE user_roles AS ENUM ('admin','employee','customer');
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  active BOOLEAN NOT NULL DEFAULT TRUE,
+  user_role user_roles DEFAULT 'customer' NOT NULL,
+  create_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
