@@ -6,7 +6,7 @@ export const getAllOrders = async (_: Request, res: Response, next: NextFunction
   try {
     log.info('controllers/orders/getAllOrders', 'getting all orders')
     const ordersRepository = await initOrdersRepository()
-    const orders = await ordersRepository.find()
+    const orders = await ordersRepository.find({ relations: { orderRows: {} } })
     return res.json({ data: [...orders] })
   } catch (err) {
     log.error('controllers/orders/getAllOrders', 'error when fetching orders', err)
@@ -36,7 +36,7 @@ export const patchOrder = async (req: RequestWithExtra, res: Response, next: Nex
   const id = +req.params.id
   const user = req.user!
   if (user.role !== 'admin' || !dto.empRef) {
-    dto.empRef = +user.id
+    dto.empRef = user.id
   }
   try {
     log.info('controllers/orders/patchOrder', 'patching order with', { dto, user, orderId: id })
@@ -61,7 +61,7 @@ export const deleteOrder = async (req: RequestWithExtra, res: Response, next: Ne
     log.info('controllers/orders/deleteOrder', 'removing order:', { id, user })
     const ordersRepository = await initOrdersRepository()
     const order = await ordersRepository.findOneBy({ id })
-    if (order?.empRef !== +user.id && user.role !== 'admin') {
+    if (order?.empRef !== user.id && user.role !== 'admin') {
       throw new Error('Forbidden action')
     }
     await ordersRepository.delete({ id })

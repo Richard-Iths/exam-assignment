@@ -1,20 +1,21 @@
-import { IOrderArticle } from '../types'
+import { IOrderArticle, IOrderRow } from '../types'
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn, BeforeUpdate } from 'typeorm'
 import OrderRow from './orderRows'
 
 @Entity('order_articles')
 export default class OrderArticle implements IOrderArticle {
   @PrimaryGeneratedColumn()
-  @OneToMany(() => OrderRow, (row) => row.orderArtId)
   id: number
   @Column({ type: 'varchar' })
   description: string
-  @Column({ type: 'numeric', precision: 3 })
+  @Column({ type: 'numeric', precision: 9, scale: 3 })
   price: number
-  @Column({ type: 'datetime', default: new Date(), name: 'created_at' })
+  @Column({ type: 'timestamptz', default: new Date(), name: 'created_at' })
   createdAt: Date
-  @Column({ type: 'datetime', default: new Date(), name: 'updated_at' })
+  @Column({ type: 'timestamptz', default: new Date(), name: 'updated_at' })
   updatedAt: Date
+  @OneToMany(() => OrderRow, (row) => row.orderArt)
+  orderRows: IOrderRow[]
 
   @BeforeUpdate()
   updateDate() {

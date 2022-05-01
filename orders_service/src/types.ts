@@ -14,15 +14,17 @@ export interface IOrder {
   status: OrderStatus
   createdAt: Date
   updatedAt: Date
+  orderRows: IOrderRow[]
 }
 
 export interface IOrderRow {
   id: number
-  orderId: IOrder
-  orderArtId: IOrderArticle
+  orderId: number
+  orderArtId: number
   amount: number
   createdAt: Date
   updatedAt: Date
+  orderArt: IOrderArticle
 }
 
 export interface IOrderArticle {
@@ -31,12 +33,13 @@ export interface IOrderArticle {
   price: number
   createdAt: Date
   updatedAt: Date
+  orderRows: IOrderRow[]
 }
 
 export type UserRole = 'admin' | 'customer' | 'employee'
 
 export interface JwtUserPayload extends JwtPayload {
-  id: string
+  id: number
   role: UserRole
 }
 

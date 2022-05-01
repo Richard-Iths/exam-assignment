@@ -1,6 +1,6 @@
 import log from '../utils/logger'
 import { DataSource } from 'typeorm'
-import Orders from '../models/orders'
+import { Order, OrderArticle, OrderRow } from '../models'
 
 export const initDataSource = async () => {
   try {
@@ -12,7 +12,7 @@ export const initDataSource = async () => {
       username: process.env.PGUSER ?? 'postgres',
       password: process.env.PGPASSWORD ?? 'example',
       database: process.env.PGDATABASE ?? 'postgres',
-      entities: [Orders],
+      entities: [Order, OrderRow, OrderArticle],
       synchronize: false,
     }).initialize()
   } catch (err) {

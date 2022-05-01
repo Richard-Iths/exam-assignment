@@ -3,7 +3,7 @@ import log from '../utils/logger'
 import { Repository } from 'typeorm'
 import { OrderRow } from '../models'
 
-const initOrdersRepository = async (): Promise<Repository<OrderRow>> => {
+const initOrderRowsRepository = async (): Promise<Repository<OrderRow>> => {
   try {
     const ds = await initDataSource()
     if (!ds) {
@@ -16,4 +16,4 @@ const initOrdersRepository = async (): Promise<Repository<OrderRow>> => {
   }
 }
 
-export default initOrdersRepository
+export default initOrderRowsRepository
