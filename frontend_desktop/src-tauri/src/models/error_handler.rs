@@ -1,66 +1,79 @@
-use crate::models::json_api::{JsonApiBase, JsonApiData};
-use serde::{Deserialize, Serialize};
-pub enum AppErrors {
-  EmptyConfig,
-  ConfigFileNotFound,
-  WriteConfigError,
-}
-pub enum ErrorHandler {
-  ApplicationError(AppErrors),
-  FileError(std::io::Error),
-}
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct ErrorResponseMessage<'a> {
-  pub status_code: &'a str,
-  pub message: &'a str,
+use crate::models::json_response::JsonErrorResponse;
+
+pub enum ApplicationErrorCode {
+  AppConfigNotFound,
+  AppConfigEmpty,
+  IOError(std::io::Error),
+  TauriError(tauri::Error),
+  TauriApiError(tauri::api::Error),
+  SerdeJson(serde_json::Error),
 }
 
-impl<'a> ErrorHandler {
-  pub fn error_response(&self, path: &'a str) -> JsonApiBase<'a, ErrorResponseMessage<'a>> {
-    use std::io::ErrorKind::NotFound;
-    match self {
-      ErrorHandler::FileError(err) if err.kind() == NotFound => {
-        let error =
-          ErrorHandler::generate_error("File not found when creating/reading file", "101", path);
-        JsonApiBase::new(error)
-      }
-      ErrorHandler::FileError(_) => {
-        let error =
-          ErrorHandler::generate_error("Something went wrong when processing a file", "102", path);
-        JsonApiBase::new(error)
-      }
-      ErrorHandler::ApplicationError(AppErrors::EmptyConfig) => {
-        let error = ErrorHandler::generate_error("Application Config is empty", "200", path);
-        JsonApiBase::new(error)
-      }
-      ErrorHandler::ApplicationError(AppErrors::ConfigFileNotFound) => {
-        let error = ErrorHandler::generate_error("Application Config not found", "201", path);
-        JsonApiBase::new(error)
-      }
-      ErrorHandler::ApplicationError(AppErrors::WriteConfigError) => {
-        let error = ErrorHandler::generate_error("Could not write application config", "202", path);
-        JsonApiBase::new(error)
-      }
+pub struct ErrorHandler {
+  pub error: ApplicationErrorCode,
+}
+
+impl ErrorHandler {
+  pub fn new(error: ApplicationErrorCode) -> Self {
+    Self { error }
+  }
+
+  pub fn match_error(self) -> JsonErrorResponse<String> {
+    match self.error {
+      ApplicationErrorCode::AppConfigNotFound => JsonErrorResponse {
+        error: "config file not found".to_string(),
+      },
+      ApplicationErrorCode::IOError(_) => JsonErrorResponse {
+        error: "Something went wrong when trying to read/write file".to_string(),
+      },
+      ApplicationErrorCode::AppConfigEmpty => JsonErrorResponse {
+        error: "Application config is empty".to_string(),
+      },
+      ApplicationErrorCode::TauriApiError(_) => JsonErrorResponse {
+        error: "Request error".to_string(),
+      },
+      ApplicationErrorCode::TauriError(_) => JsonErrorResponse {
+        error: "Internal error".to_string(),
+      },
+      ApplicationErrorCode::SerdeJson(_) => JsonErrorResponse {
+        error: "Serialize/Deserialize json error".to_string(),
+      },
     }
   }
-  pub fn generate_error(
-    message: &'a str,
-    status_code: &'a str,
-    path: &'a str,
-  ) -> Vec<JsonApiData<'a, ErrorResponseMessage<'a>>> {
-    vec![JsonApiData {
-      resource_type: path,
-      attributes: ErrorResponseMessage {
-        status_code,
-        message,
-      },
-    }]
+  pub fn from_json_error_value<'a, T>(data: serde_json::Value) -> Result<T, ErrorHandler>
+  where
+    T: serde::de::DeserializeOwned,
+  {
+    let deserialized_data: T = serde_json::from_value(data)?;
+    Ok(deserialized_data)
   }
 }
 
 impl From<std::io::Error> for ErrorHandler {
   fn from(err: std::io::Error) -> Self {
-    Self::FileError(err)
+    ErrorHandler {
+      error: ApplicationErrorCode::IOError(err),
+    }
+  }
+}
+impl From<tauri::Error> for ErrorHandler {
+  fn from(err: tauri::Error) -> Self {
+    ErrorHandler {
+      error: ApplicationErrorCode::TauriError(err),
+    }
+  }
+}
+impl From<tauri::api::Error> for ErrorHandler {
+  fn from(err: tauri::api::Error) -> Self {
+    ErrorHandler {
+      error: ApplicationErrorCode::TauriApiError(err),
+    }
+  }
+}
+impl From<serde_json::Error> for ErrorHandler {
+  fn from(err: serde_json::Error) -> Self {
+    ErrorHandler {
+      error: ApplicationErrorCode::SerdeJson(err),
+    }
   }
 }

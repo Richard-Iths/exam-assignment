@@ -1,14 +1,7 @@
-export interface IJsonApiData<T> {
-  type: string;
-  attributes: T;
-}
-export interface IJsonApiBase<T> {
-  resources: string;
-  data: IJsonApiData<T>[];
+export interface IJsonResponse<T> {
+  data: T;
 }
 
-interface SuccessResponse {
-  message: string;
+export interface IJsonErrorResponse<T> {
+  error: T;
 }
-
-export type JsonApiSuccessResponse = IJsonApiBase<SuccessResponse>;

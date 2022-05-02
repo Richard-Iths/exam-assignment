@@ -1,43 +1,46 @@
 <script context="module" lang="ts" >
-	import type {ErrorResponse, IAppConfig,IJsonApiBase} from "@lib/models"
+	import type {IJsonErrorResponse} from "@lib/models"
+	import type {AppState} from '@src/types'
 
 </script>
 
 <script lang="ts">
 import { onMount } from "svelte";
 import {invoke} from '@tauri-apps/api'
-import { ErrorCodes } from "@lib/models/errors";
 import Router from 'svelte-spa-router';
 import routes from "@lib/routes/routes";
 import AppConfig from "@components/app/configs/AppConfig.svelte";
 import appStore, {updateApp} from "@lib/stores/app"
 import AsideNav from "@components/app/nav/AsideNav.svelte";
 import { TauriCommands } from "./types";
+import Login from "@lib/components/app/login/Login.svelte";
 
 	onMount(async () => {
 		try {
-			const res = await invoke<IJsonApiBase<IAppConfig>>(TauriCommands.INIT_APPLICATION_CONFIG)
-
-			console.log(res.data);			
-			
+			await invoke(TauriCommands.INIT_APPLICATION_CONFIG)
+			await invoke(TauriCommands.IS_AUTHENTICATED)
 		} catch (err : unknown) {
-			const {data} = err as IJsonApiBase<ErrorResponse>;
-				console.log(data,"err");
-			if(data.some(e => e.attributes.statusCode == ErrorCodes.EMPTY_CONFIG_FILE)) {
+			const {error} = err as IJsonErrorResponse<AppState>;
+			if(error === "uninitialized") {
 				updateApp("uninitialized")
+			}
+			if(error === "unauthorized") {
+				updateApp("unauthorized")
 			}
 		}
 	})
 
 </script>
 <div class="wrapper">
-
 	<AsideNav/>
 	<main>
 		<Router {routes} />
 	</main>
 	{#if $appStore.state === "uninitialized"}
 	<AppConfig />
+	{/if}
+	{#if $appStore.state === "unauthorized"}
+	<Login />
 	{/if}
 </div>
 

@@ -1,11 +1,18 @@
 export enum TauriCommands {
   INIT_APPLICATION_CONFIG = "init_application_config",
   ADD_APPLICATION_CONFIG = "add_application_config",
+  IS_AUTHENTICATED = "is_authenticated",
+  AUTHENTICATE_USER = "authenticate_user",
 }
 
-export type AppStates = "initialized" | "uninitialized" | "pending";
+export type AppState =
+  | "pending"
+  | "initialized"
+  | "uninitialized"
+  | "unauthorized"
+  | "authorized";
 export interface AppContext {
-  appState: AppStates;
+  appState: AppState;
 }
 export enum AppContextKeys {
   STATE = "state",

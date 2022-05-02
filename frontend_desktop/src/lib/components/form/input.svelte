@@ -19,7 +19,7 @@
   {#if inputLabel}
      <label for={name} class="font-heading--xxs">{inputLabel}</label>
   {/if}
-  <input name={name} class="accent-color"  placeholder={placeHolder ? placeHolder : ""} bind:value={value} onchange={onChangeHandler}/> 
+  <input name={name} class="accent-color"  placeholder={placeHolder ? placeHolder : ""} bind:value={value} on:change={onChangeHandler}/> 
 </div>
 
 <style lang="scss">

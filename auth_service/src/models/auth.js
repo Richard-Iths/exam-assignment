@@ -21,7 +21,7 @@ const getUserByUsername = async (username) => {
 }
 
 const authenticateUser = async (hashedPassword, comparePassword) => {
-  log.info('model/auth/authenticateUser', 'authenticating user')
+  log.info('model/auth/authenticateUser', 'comparing passwords with argon')
   try {
     if (await argon2.verify(hashedPassword, comparePassword)) {
       return true

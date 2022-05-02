@@ -1,6 +1,6 @@
 use crate::models::configs::AppConfig;
-use crate::models::error_handler::{AppErrors, ErrorHandler, ErrorResponseMessage};
-use crate::models::json_api::{JsonApiBase, SuccessResponse};
+use crate::models::error_handler::{ApplicationErrorCode, ErrorHandler};
+use crate::models::json_response::{JsonErrorResponse, JsonResponse};
 use crate::models::paths::ApplicationPath;
 use serde::{Deserialize, Serialize};
 use std::fs::File;
@@ -18,41 +18,35 @@ fn read_file(path: ApplicationPath) -> Result<String, ErrorHandler> {
     file.read_to_string(&mut contents)?;
     Ok(contents)
   } else {
-    Err(ErrorHandler::ApplicationError(
-      AppErrors::ConfigFileNotFound,
-    ))
+    Err(ErrorHandler::new(ApplicationErrorCode::AppConfigNotFound))
   }
 }
-fn write_file(path: ApplicationPath, config: &AppConfig) -> Result<u8, ErrorHandler> {
+fn write_file(path: ApplicationPath, config: &AppConfig) -> Result<(), ErrorHandler> {
   if let Some(file_path) = path.into_path() {
     let mut file = File::create(file_path)?;
     let json_string = serde_json::to_string(&config).unwrap();
     println!("here json,{}", { &json_string });
     file.write(json_string.as_bytes())?;
-    Ok(0)
+    Ok(())
   } else {
-    Err(ErrorHandler::ApplicationError(
-      AppErrors::ConfigFileNotFound,
-    ))
+    Err(ErrorHandler::new(ApplicationErrorCode::AppConfigNotFound))
   }
 }
 #[tauri::command]
 pub fn init_application_config<'a>(
   app_config: State<AppConfigState>,
-) -> Result<AppConfig, JsonApiBase<'a, ErrorResponseMessage<'a>>> {
+) -> Result<JsonResponse<&'static str>, JsonErrorResponse<String>> {
   let file = match read_file(ApplicationPath::AppConfigFile) {
     Ok(res) => res,
-    Err(e) => return Err(e.error_response("states/init/config")),
+    Err(e) => return Err(e.match_error()),
   };
 
   if file.is_empty() {
-    return Err(
-      ErrorHandler::ApplicationError(AppErrors::EmptyConfig).error_response("states/init/config"),
-    );
+    return Err(ErrorHandler::new(ApplicationErrorCode::AppConfigEmpty).match_error());
   } else {
     let config: AppConfig = serde_json::from_str(&file).unwrap();
     *app_config.0.lock().unwrap() = config;
-    Ok(app_config.0.lock().unwrap().clone())
+    Ok(JsonResponse::new("config file initialized"))
   }
 }
 
@@ -60,18 +54,12 @@ pub fn init_application_config<'a>(
 pub fn add_application_config(
   new_config: AppConfig,
   app_config: State<AppConfigState>,
-) -> Result<JsonApiBase<'static, SuccessResponse>, JsonApiBase<ErrorResponseMessage>> {
+) -> Result<JsonResponse<&'static str>, JsonErrorResponse<String>> {
   match write_file(ApplicationPath::AppConfigFile, &new_config) {
-    Ok(0) => {
+    Ok(()) => {
       *app_config.0.lock().unwrap() = new_config;
-      Ok(JsonApiBase::<SuccessResponse>::new_success_message())
+      Ok(JsonResponse::new("Config file added"))
     }
-    Ok(_) => {
-      panic!()
-    }
-    Err(_) => Err(
-      ErrorHandler::ApplicationError(AppErrors::WriteConfigError)
-        .error_response("states/add/config"),
-    ),
+    Err(_) => Err(ErrorHandler::new(ApplicationErrorCode::AppConfigNotFound).match_error()),
   }
 }

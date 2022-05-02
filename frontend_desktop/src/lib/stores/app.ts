@@ -1,13 +1,13 @@
 import { writable } from "svelte/store";
-import type { AppStates } from "@src/types";
+import type { AppState } from "@src/types";
 
 interface Store {
-  state: AppStates;
+  state: AppState;
 }
 
 const appStore = writable<Store>({ state: "pending" });
 
-export const updateApp = (state: AppStates) =>
+export const updateApp = (state: AppState) =>
   appStore.update(() => ({ state }));
 
 export default appStore;

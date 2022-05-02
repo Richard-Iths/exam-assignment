@@ -4,6 +4,7 @@
   import type { Props as IBtn } from "@components/buttons/ActionButton.svelte";
   import { AppConfig, TauriCommands } from "@src/types";
   import type { IJsonResponse } from "@lib/models";
+  import type {AppState} from '@src/types';
 </script>
 
 <script lang="ts">
@@ -13,51 +14,50 @@
   import {updateApp} from '@lib/stores/app'
   import { invoke } from "@tauri-apps/api/tauri";
 
-  const newConfig: AppConfig = {
-    host: {
-      address: "http://localhost",
-      port: 7001,
-    },
+  const authUser: {username:string,password:string} = {
+      username: "",
+      password:"" ,
   };
   const onChangeHandler = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const value = target.value;
     const key = target.name;
-
     if (value) {
-      newConfig.host[key] = value;
+      authUser[key] = value;
     }
   };
-  const proxyConfigForm: IForm["inputs"] = [
+  const loginForm: IForm["inputs"] = [
     {
-      inputLabel: "Proxy Address",
-      name: "proxy-address",
+      inputLabel: "Username",
+      name: "username",
       value: "",
-      placeHolder: "http://localhost",
+      placeHolder: "username",
       onChangeHandler,
     },
     {
-      inputLabel: "Port",
-      name: "port",
+      inputLabel: "password",
+      name: "password",
       value: "",
-      placeHolder: "7001",
+      placeHolder: "password",
       onChangeHandler,
     },
   ];
   const baseModalState: IBaseModal = {
     onCloseHandler: () => {},
-    title: "Configure application settings",
+    title: "Login",
   };
   const actionBtnState: IBtn = {
     onClickHandler: async () => {
       console.log("here");
       try {
-        const res = await invoke<IJsonResponse<string>>(
-          TauriCommands.ADD_APPLICATION_CONFIG,
-          { newConfig }
+        console.log(authUser,"authUser")
+        const res = await invoke<IJsonResponse<AppState>>(
+          TauriCommands.AUTHENTICATE_USER,
+          { authUser }
         );
-        if (res.data[0] === "config file added") {
-          updateApp("initialized")
+        console.log(res,"res");
+        if (res.data === "authorized") {
+          updateApp("authorized")
         }
       } catch (err) {
         console.log(err);
@@ -69,7 +69,7 @@
 
 <BaseModal {...baseModalState}>
   <section class="app-config">
-    <Form inputs={[...proxyConfigForm]} />
+    <Form inputs={[...loginForm]} />
     <ActionButton {...actionBtnState} />
   </section>
 </BaseModal>
