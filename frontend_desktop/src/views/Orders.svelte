@@ -1,16 +1,16 @@
 <script>
-import OrdersTable from "@src/lib/components/orders/tables/OrdersTable.svelte";
+import OrdersCta from "@components/orders/cta/OrdersCta.svelte";
 
+import OrdersTable from "@components/orders/tables/OrdersTable.svelte";
 </script>
 <section class="orders-view primary-color">
-  <div class="orders-view__cta">
-    <h4>cta</h4>
-  </div>
+    <OrdersCta /> 
     <OrdersTable />
 </section>
 
 <style lang="scss">
   .orders-view {
     min-height: 100%;
+    padding:2rem 0;
   }
 </style>

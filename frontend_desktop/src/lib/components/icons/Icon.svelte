@@ -17,9 +17,6 @@
     icon:AppIcons
     size:AppIconSizes
   }
-  export enum IconEvent {
-    ON_ICON_CLICK = "onIconClick"
-  }
 </script>
 
 <script lang="ts">
