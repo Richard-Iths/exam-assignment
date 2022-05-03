@@ -5,11 +5,11 @@ import log from '../utils/logger'
 export const authorization = (req: RequestWithExtra, _: Response, next: NextFunction) => {
   const { authorization = null } = req.headers
   try {
+    log.info('middlewares/auth/authorization', 'validating token', { authorization })
     if (!authorization) {
       throw new Error('invalid token')
     }
     const token = authorization.replace('Bearer ', '')
-    log.info('middlewares/auth/authorization', 'validating token', token)
     req.user = jwt.verify(token, process.env.JWT_SECRET ?? 'secret') as JwtUserPayload
     next()
   } catch (err) {

@@ -28,18 +28,25 @@ impl<T> JsonErrorResponse<T> {
   }
 }
 
-impl From<tauri::api::Error> for JsonErrorResponse<String> {
-  fn from(err: tauri::api::Error) -> Self {
-    let error = ErrorHandler {
-      error: ApplicationErrorCode::TauriApiError(err),
-    };
-    error.match_error()
-  }
-}
 impl From<serde_json::Error> for JsonErrorResponse<String> {
   fn from(err: serde_json::Error) -> Self {
     let error = ErrorHandler {
       error: ApplicationErrorCode::SerdeJson(err),
+    };
+    error.match_error()
+  }
+}
+
+impl From<ErrorHandler> for JsonErrorResponse<String> {
+  fn from(err: ErrorHandler) -> Self {
+    err.match_error()
+  }
+}
+
+impl From<tauri::api::Error> for JsonErrorResponse<String> {
+  fn from(err: tauri::api::Error) -> Self {
+    let error = ErrorHandler {
+      error: ApplicationErrorCode::TauriApiError(err),
     };
     error.match_error()
   }

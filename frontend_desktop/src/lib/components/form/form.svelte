@@ -17,7 +17,7 @@ import Input from "./input.svelte";
 
 <article class={`form-controller ${styling.direction}`}>
   {#each inputs as input }
-    <Input {...input} />
+    <Input {...input}/>
   {/each}
 </article>
 

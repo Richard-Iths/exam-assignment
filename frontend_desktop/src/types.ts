@@ -3,6 +3,7 @@ export enum TauriCommands {
   ADD_APPLICATION_CONFIG = "add_application_config",
   IS_AUTHENTICATED = "is_authenticated",
   AUTHENTICATE_USER = "authenticate_user",
+  GET_ORDERS = "get_orders",
 }
 
 export type AppState =
@@ -46,18 +47,24 @@ export const OrderStatusesMapping: Record<OrderStatues, string> = {
 };
 export interface Order {
   id: number;
-  orderNo: number;
+  orderNumb: number;
   description: string;
   customerRef?: string;
-  employeeRef?: string;
+  empRef?: string;
   status: string;
+  createdAt: string;
+  updatedAt: string;
 }
-export const OrderFormMapping: Record<keyof Omit<Order, "id">, string> = {
-  orderNo: "order no",
+export const OrderFormMapping: Record<
+  keyof Omit<Order, "id" | "createdAt">,
+  string
+> = {
+  orderNumb: "order number",
   description: "description",
   customerRef: "customer ref",
-  employeeRef: "employee ref",
+  empRef: "employee ref",
   status: "status",
+  updatedAt: "updated",
 };
 export interface OrderRow {
   id: number;

@@ -16,8 +16,9 @@ pub struct AuthUser {
 }
 
 #[derive(Serialize, Deserialize, Default, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct UserToken {
-  pub jwtToken: String,
+  pub jwt_token: String,
 }
 #[derive(Serialize, Deserialize)]
 pub enum AuthStatus {

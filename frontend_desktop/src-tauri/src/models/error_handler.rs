@@ -1,5 +1,6 @@
 use crate::models::json_response::JsonErrorResponse;
 
+#[derive(Debug)]
 pub enum ApplicationErrorCode {
   AppConfigNotFound,
   AppConfigEmpty,
@@ -8,7 +9,7 @@ pub enum ApplicationErrorCode {
   TauriApiError(tauri::api::Error),
   SerdeJson(serde_json::Error),
 }
-
+#[derive(Debug)]
 pub struct ErrorHandler {
   pub error: ApplicationErrorCode,
 }

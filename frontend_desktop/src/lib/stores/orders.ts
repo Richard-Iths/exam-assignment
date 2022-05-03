@@ -3,9 +3,10 @@ import type { Order } from "@src/types";
 
 interface Store {
   openOrders: Order[];
+  orders: Order[];
 }
 
-const orderStore = writable<Store>({ openOrders: [] });
+const orderStore = writable<Store>({ openOrders: [], orders: [] });
 
 export const toggleOrder = (newOrder: Order | number) =>
   orderStore.update((state) => {
@@ -23,5 +24,8 @@ export const toggleOrder = (newOrder: Order | number) =>
     }
     return { ...state, openOrders: [...state.openOrders, newOrder] };
   });
+
+export const initOrders = (orders: Order[]) =>
+  orderStore.update((state) => ({ ...state, orders: [...orders] }));
 
 export default orderStore;

@@ -16,7 +16,7 @@ pub async fn authenticate_user(
   app_config_state: State<'_, AppConfigState>,
 ) -> Result<JsonResponse<&'static str>, JsonErrorResponse<String>> {
   let app_config = app_config_state.0.lock().unwrap().clone();
-  let res = post::<AuthUser>(ApiEndpoint::AuthUser, None, auth_user, app_config).await;
+  let res = post::<AuthUser>(ApiEndpoint::AuthUser, None, auth_user, app_config, None).await;
   let (status, data) = match res?.read().await {
     Ok(res_body) => (res_body.status, res_body.data),
     Err(_) => return Err(JsonErrorResponse::new("unauthorized".to_string())),
@@ -46,7 +46,7 @@ pub async fn is_authenticated(
   auth_user_state: State<'_, UserAuthState>,
 ) -> Result<JsonResponse<String>, JsonErrorResponse<String>> {
   let auth_status = auth_user_state.0.lock().unwrap().clone();
-  if auth_status.jwtToken.len() > 0 {
+  if auth_status.jwt_token.len() > 0 {
     Ok(JsonResponse::new(AuthStatus::Authorized.match_status()))
   } else {
     Err(JsonErrorResponse::new(
