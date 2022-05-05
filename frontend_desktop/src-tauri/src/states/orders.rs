@@ -5,6 +5,7 @@ use crate::states::app_config::AppConfigState;
 use crate::UserAuthState;
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
+use tauri::AppHandle;
 use tauri::State;
 
 #[derive(Default, Serialize, Deserialize, Debug)]
@@ -45,4 +46,20 @@ pub async fn get_orders(
       return Err(orders_err);
     }
   }
+}
+#[tauri::command]
+pub fn create_child_window(id: String, app: AppHandle) {
+  use tauri::{window::WindowBuilder, WindowUrl};
+  #[cfg(any(windows, target_os = "macos"))]
+  let main = app.get_window("main").unwrap();
+  let url = std::path::PathBuf::from("/orders");
+  let child = WindowBuilder::new(&app, id, WindowUrl::App(url))
+    .title("Child")
+    .inner_size(400.0, 300.0);
+  #[cfg(target_os = "macos")]
+  let child = child.parent_window(main.ns_window().unwrap());
+  #[cfg(windows)]
+  let child = child.parent_window(main.hwnd().unwrap());
+
+  child.build().unwrap();
 }

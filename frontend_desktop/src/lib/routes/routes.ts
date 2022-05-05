@@ -12,14 +12,14 @@ const routes = {
   [AppRoutes.USERS]: Users,
 
   // Using named parameters, with last being optional
-  // '/author/:first/:last?': Author,
+  "/orders/:id": Invoices,
 
   // Wildcard parameter
   // '/book/*': Book,
 
   // Catch-all
   // This is optional, but if present it must be the last
-  // '*': NotFound,
+  "*": Invoices,
 };
 
 export default routes;

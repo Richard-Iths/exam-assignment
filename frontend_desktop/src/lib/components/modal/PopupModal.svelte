@@ -8,7 +8,7 @@
 <script lang="ts">
   import {scale} from "svelte/transition";
   import { draggable } from '@neodrag/svelte';
-import Icon,{AppIcons, AppIconSizes} from "../icons/Icon.svelte";
+import Icon,{AppIcon, AppIconSize} from "../icons/Icon.svelte";
   export let onCloseHandler : Props["onCloseHandler"];
   export let title: Props["title"] = "";
 </script>
@@ -23,7 +23,7 @@ transition:scale={{duration:500}} use:draggable={{bounds:"body",cancel:".cancel"
     <h4 class="font-heading--xs">{title}</h4>
     {/if}
     <button class="popup-modal__cta__btn accent-color--dark"  on:click={onCloseHandler}> 
-      <Icon icon={AppIcons.CLOSE} size={AppIconSizes.MEDIUM}/>
+      <Icon icon={AppIcon.CLOSE} size={AppIconSize.MEDIUM}/>
     </button>
   </div>
   <div class="popup-modal__inner primary-color cancel">

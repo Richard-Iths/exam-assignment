@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  export enum AppIcons {
+  export enum AppIcon {
     NAV_HOME = "ri-home-3-fill",
     NAV_CURRENCY = "ri-currency-fill",
     NAV_ORDERS = "ri-file-list-3-fill",
@@ -7,15 +7,16 @@
     ASSIGN_USER = "ri-map-pin-user-fill",
     RELEASE_ORDER="ri-building-2-fill",
     CLOSE="ri-close-fill",
+    UTILS_ADD="ri-add-fill"
   }
-  export enum AppIconSizes {
+  export enum AppIconSize {
     NORMAL = "icon--normal",
     MEDIUM = "icon--medium",
     LARGE = "icon--large"
   }
   export interface Props {
-    icon:AppIcons
-    size:AppIconSizes
+    icon:AppIcon
+    size:AppIconSize
   }
 </script>
 

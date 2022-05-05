@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import {AppIcons,AppIconSizes,Props as IIcon} from "@components/icons/Icon.svelte" 
+  import {AppIcon,AppIconSize,Props as IIcon} from "@components/icons/Icon.svelte" 
   import {AppRoutes} from "@src/types"
 
   interface Nav {
@@ -15,27 +15,27 @@ import { link } from "svelte-spa-router";
 const navLinks : Nav[] = [
   {
     icon:{
-      icon:AppIcons.NAV_HOME,
-      size:AppIconSizes.MEDIUM
+      icon:AppIcon.NAV_HOME,
+      size:AppIconSize.MEDIUM
     },
     href:AppRoutes.HOME
   },
   {
     icon: {
-      icon:AppIcons.NAV_ORDERS,
-    size:AppIconSizes.MEDIUM},
+      icon:AppIcon.NAV_ORDERS,
+    size:AppIconSize.MEDIUM},
     href:AppRoutes.ORDERS
   },
   {
     icon: {
-      icon:AppIcons.NAV_CURRENCY,
-      size:AppIconSizes.MEDIUM},
+      icon:AppIcon.NAV_CURRENCY,
+      size:AppIconSize.MEDIUM},
     href:AppRoutes.INVOICES
   },
   {
     icon: {
-      icon:AppIcons.NAV_USERS,
-      size:AppIconSizes.MEDIUM
+      icon:AppIcon.NAV_USERS,
+      size:AppIconSize.MEDIUM
       },
       href:AppRoutes.USERS
     }

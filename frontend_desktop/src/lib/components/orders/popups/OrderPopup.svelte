@@ -9,7 +9,7 @@
 <script lang="ts">
   import PopupModal,{Props as IPopupModal} from "@components/modal/PopupModal.svelte";
   import Form,{Props as IForm} from "@components/form/form.svelte"
-  import Icon,{Props as IIcon,AppIcons,AppIconSizes} from "@components/icons/Icon.svelte";
+  import Icon,{Props as IIcon,AppIcon,AppIconSize} from "@components/icons/Icon.svelte";
   import {toggleOrder} from "@lib/stores/orders"
 import OrdersRowTable from "@components/orders/tables/OrdersRowTable.svelte";
   type IconWithId = IIcon & {id:IconIds}
@@ -31,13 +31,13 @@ import OrdersRowTable from "@components/orders/tables/OrdersRowTable.svelte";
   }
   const ctaState : IconWithId[]  = [
     {
-      icon:AppIcons.ASSIGN_USER,
-      size:AppIconSizes.MEDIUM,
+      icon:AppIcon.ASSIGN_USER,
+      size:AppIconSize.MEDIUM,
       id:IconIds.ASSIGN_USER
     },
     {
-      icon:AppIcons.RELEASE_ORDER,
-      size:AppIconSizes.MEDIUM,
+      icon:AppIcon.RELEASE_ORDER,
+      size:AppIconSize.MEDIUM,
       id:IconIds.RELEASE_ORDER
     }
   ]

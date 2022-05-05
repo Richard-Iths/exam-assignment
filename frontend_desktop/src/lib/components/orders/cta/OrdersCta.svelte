@@ -1,23 +1,27 @@
 <script context="module" lang="ts">
-  import {AppIconSizes,AppIcons} from "@components/icons/Icon.svelte"
+  import {AppIconSize,AppIcon} from "@components/icons/Icon.svelte"
+  export interface Props {
+    handleNewOrderPopup:() => void
+  }
 </script>
 <script lang="ts">
 import BaseCta,{Props as IBaseCta} from "@components/cta/BaseCta.svelte"
+  export let handleNewOrderPopup : Props["handleNewOrderPopup"]
   const ctaState: IBaseCta[] = [
     {
       icon:{
-        icon:AppIcons.CLOSE,
-        size:AppIconSizes.MEDIUM
+        icon:AppIcon.UTILS_ADD,
+        size:AppIconSize.MEDIUM
       },
       onClickHandler:(_) => {
-        console.log("clicked")
+        handleNewOrderPopup()
       },
       title:"New Order"
     },
     {
       icon:{
-        icon:AppIcons.CLOSE,
-        size:AppIconSizes.MEDIUM
+        icon:AppIcon.CLOSE,
+        size:AppIconSize.MEDIUM
       },
       onClickHandler:(_) => {
         console.log("clicked")

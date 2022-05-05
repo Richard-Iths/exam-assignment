@@ -57,6 +57,9 @@
       },
       "http": {
         "request": true
+      },
+      "window": {
+        "create": true
       }
     },
     "windows": [

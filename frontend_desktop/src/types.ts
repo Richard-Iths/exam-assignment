@@ -33,25 +33,18 @@ export enum AppRoutes {
   INVOICES = "/invoices",
   USERS = "/users",
 }
-export enum Statues {
-  PENDING,
-  IN_PROGRESS,
-  INVOICE,
-  INVOICED,
+export enum OrderStatus {
+  PENDING = "pending",
+  IN_PROGRESS = "inProgress",
 }
-export type OrderStatues = Statues.PENDING | Statues.IN_PROGRESS;
 
-export const OrderStatusesMapping: Record<OrderStatues, string> = {
-  "0": "pending",
-  "1": "in progress",
-};
 export interface Order {
   id: number;
   orderNumb: number;
   description: string;
   customerRef?: string;
   empRef?: string;
-  status: string;
+  status: OrderStatus;
   createdAt: string;
   updatedAt: string;
 }
@@ -65,6 +58,15 @@ export const OrderFormMapping: Record<
   empRef: "employee ref",
   status: "status",
   updatedAt: "updated",
+};
+export const OrderCreateFormMapping: Record<
+  keyof Pick<Order, "empRef" | "customerRef" | "status" | "description">,
+  string
+> = {
+  description: "description",
+  status: "status",
+  customerRef: "customer ref",
+  empRef: "employee ref",
 };
 export interface OrderRow {
   id: number;

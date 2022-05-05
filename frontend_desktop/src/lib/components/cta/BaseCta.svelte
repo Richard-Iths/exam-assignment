@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import type {Props as IIcon, AppIconSizes,AppIcons} from "@components/icons/Icon.svelte";
+  import type {Props as IIcon} from "@components/icons/Icon.svelte";
   export interface Props {
     icon:IIcon,
     onClickHandler: (e: Event) => void

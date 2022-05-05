@@ -18,7 +18,7 @@ tauri-build = { version = "1.0.0-rc.4", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 chrono = {version = "0.4.19", features= ["serde"] }
-tauri = { version = "1.0.0-rc.4", features = ["fs-read-dir", "fs-read-file", "fs-write-file", "http-request"] }
+tauri = { version = "1.0.0-rc.4", features = ["fs-read-dir", "fs-read-file", "fs-write-file", "http-request", "window-create"] }
 
 [features]
 # by default Tauri runs in production mode

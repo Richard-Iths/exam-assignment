@@ -4,7 +4,7 @@
 )]
 use crate::states::app_config::{add_application_config, init_application_config, AppConfigState};
 use crate::states::auth_user::{authenticate_user, is_authenticated, UserAuthState};
-use crate::states::orders::{get_orders, OrdersState};
+use crate::states::orders::{create_child_window, get_orders, OrdersState};
 use crate::states::users::{init_users, UsersState};
 
 mod api;
@@ -22,7 +22,8 @@ fn main() {
       init_users,
       authenticate_user,
       is_authenticated,
-      get_orders
+      get_orders,
+      create_child_window
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");

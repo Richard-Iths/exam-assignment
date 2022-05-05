@@ -3,12 +3,13 @@
 </script>
 <script lang="ts">
 import BaseTable from "@components/tables/BaseTable.svelte";
-import {Order,OrderStatusesMapping,OrderFormMapping, TauriCommands} from "@src/types"
+import {Order,OrderFormMapping, TauriCommands} from "@src/types"
 import orderStore,{toggleOrder,initOrders} from "@lib/stores/orders"
 import OrderPopup from "../popups/OrderPopup.svelte";
 import { onMount } from "svelte";
 import { invoke } from "@tauri-apps/api/tauri";
 import type { IJsonResponse } from "@src/lib/models";
+import { WebviewWindow } from "@tauri-apps/api/window";
 const tableState : IBaseTable = {
   headers: Object.values(OrderFormMapping),
   useFooter:false
@@ -20,6 +21,13 @@ const openOrder = (order:Order) : void => {
 onMount(async () => {
   try {
 const res = await invoke<IJsonResponse<Order[]>>(TauriCommands.GET_ORDERS,{reQuery:false})
+//   const webview = new WebviewWindow('theUniqueLabel', {
+//   url: 'tauri://localhost/orders/123',
+//   title:"New Order",
+//   resizable:true
+// })
+// webview.setFullscreen(true)
+const window = await invoke("create_child_window",{id:"15"})
 console.log(res,"res")
 initOrders([...res.data])
   } catch (error) {
