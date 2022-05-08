@@ -48,26 +48,7 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
 }
-export const OrderFormMapping: Record<
-  keyof Omit<Order, "id" | "createdAt">,
-  string
-> = {
-  orderNumb: "order number",
-  description: "description",
-  customerRef: "customer ref",
-  empRef: "employee ref",
-  status: "status",
-  updatedAt: "updated",
-};
-export const OrderCreateFormMapping: Record<
-  keyof Pick<Order, "empRef" | "customerRef" | "status" | "description">,
-  string
-> = {
-  description: "description",
-  status: "status",
-  customerRef: "customer ref",
-  empRef: "employee ref",
-};
+
 export interface OrderRow {
   id: number;
   art: string;
@@ -109,3 +90,8 @@ export const UserFormMapping: Record<keyof Omit<User, "id">, string> = {
   createdAt: "created",
   updatedAt: "last updated",
 };
+
+export enum KeyboardShortCut {
+  ESCAPE = "Escape",
+  OPEN_ORDER = "ctrl+o",
+}

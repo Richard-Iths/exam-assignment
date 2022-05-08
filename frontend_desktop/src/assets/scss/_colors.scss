@@ -52,7 +52,7 @@ $colors: (
 :global(input::placeholder) {
   color: getColor("primaryDark");
 }
-:global(.odd-background:nth-child(odd)) {
+:global(.even-background:nth-child(even)) {
   background-color: getColor("utilityTableColumn");
 }
 :global(.hover--dark:hover) {

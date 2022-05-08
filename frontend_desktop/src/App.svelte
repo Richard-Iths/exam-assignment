@@ -1,60 +1,44 @@
-<script context="module" lang="ts" >
-	import type {IJsonErrorResponse} from "@lib/models"
-	import type {AppState} from '@src/types'
-
-</script>
-
 <script lang="ts">
-import { onMount } from "svelte";
-import {invoke} from '@tauri-apps/api'
-import Router from 'svelte-spa-router';
-import routes from "@lib/routes/routes";
-import AppConfig from "@components/app/configs/AppConfig.svelte";
-import appStore, {updateApp} from "@lib/stores/app"
-import AsideNav from "@components/app/nav/AsideNav.svelte";
-import { TauriCommands } from "./types";
-import Login from "@lib/components/app/login/Login.svelte";
+  import { Router,Route} from "svelte-navigator";
+  import appStore,{updateApp} from '@lib/stores/app'
+  import Orders from '@views/Orders.svelte'
+  import Invoices from '@views/Invoices.svelte'
+  import Users from '@views/Users.svelte'
+  import Header from "./lib/components/app/Header.svelte";
+  import { onMount } from "svelte";
+  import { invoke } from "@tauri-apps/api/tauri";
+  import { TauriCommands,AppState } from "./types";
+import type { IJsonErrorResponse } from "@lib/models";
+import LoginForm from "./lib/components/app/login/LoginForm.svelte";
+ 
+  onMount(async () => {
+    try {
+      if($appStore.state === "pending") {
+     await invoke(TauriCommands.INIT_APPLICATION_CONFIG)
+     await invoke(TauriCommands.IS_AUTHENTICATED)
+    }
+    } catch (err : unknown) {
+      const jsonErrResponse = err as IJsonErrorResponse<AppState> 
 
-	onMount(async () => {
-		try {
-			await invoke(TauriCommands.INIT_APPLICATION_CONFIG)
-			await invoke(TauriCommands.IS_AUTHENTICATED)
-		} catch (err : unknown) {
-			const {error} = err as IJsonErrorResponse<AppState>;
-			if(error === "uninitialized") {
-				updateApp("uninitialized")
-			}
-			if(error === "unauthorized") {
-				updateApp("unauthorized")
-			}
-		}
-	})
-
+      if(jsonErrResponse.error) {
+        updateApp(jsonErrResponse.error)
+      }
+    }
+   
+  })
 </script>
-<div class="wrapper">
-	<AsideNav/>
+
+<Router >
+  <Header/>
 	<main>
-		<Router {routes} />
-	</main>
-	{#if $appStore.state === "uninitialized"}
-	<AppConfig />
-	{/if}
-	{#if $appStore.state === "unauthorized"}
-	<Login />
-	{/if}
-</div>
-
-
+    <Route path="invoices" component={Invoices} />
+		<Route path="orders" component={Orders} />
+		<Route path="users" component={Users} />
+  </main>
+</Router>
+{#if $appStore.state === "unauthorized" }
+<LoginForm /> 
+{/if}
 <style lang="scss">
-	@import "./assets/scss";
-	.wrapper {
-		display: grid;
-		grid-template-columns: 10rem auto;
-		grid-template-rows: 100%;
-		border:2px solid #000;
-		min-height: 100vh;
-		main {
-			min-height: 99%;
-		}
-	}
+  @import "./assets/scss/"
 </style>

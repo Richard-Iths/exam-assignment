@@ -1,45 +1,59 @@
 <script context="module" lang="ts">
+ 
+  export enum ModalTransition {
+    TRANSITION_SLIDE,
+    TRANSITION_FADE,
+  }
   export interface Props {
-    onCloseHandler:() => void;
-    title?:string; 
+    title:string;
   }
 </script>
 
 <script lang="ts">
-  import {scale} from "svelte/transition";
-  import { draggable } from '@neodrag/svelte';
-  export let onCloseHandler : Props["onCloseHandler"];
-  export let title: Props["title"] = "";
-</script>
+  import {navigate} from 'svelte-navigator'
+import {fly} from 'svelte/transition'
+import Icon ,{IconName,IconSize,Props as IIcon} from "@components/ui/icons/Icon.svelte"
+import { KeyboardShortCut } from '@src/types';
+  export let title : Props["title"]
 
-<section class="modal primary-color--dark-modal" on:click={onCloseHandler}>
-  <article class="modal__draggable" transition:scale={{duration:500}} use:draggable={{bounds:"parent",cancel:".cancel"}}>
-    <div class="modal__cta accent-color">
-      {#if title}
-      <h4 class="font-heading--xs">{title}</h4>
-      {/if}
-    </div>
-    <div class="modal__inner accent-color--dark cancel">
-      <slot></slot>
-    </div>
-  </article>
+  const iconProps : IIcon = {
+    iconName:IconName.BACK_ICON,
+    iconSize:IconSize.EXTRA_LARGE
+  }
+  const onCloseHandler =(e: Event) => {
+    if(e instanceof KeyboardEvent &&  e.code === KeyboardShortCut.ESCAPE || e instanceof MouseEvent) {
+      navigate(-1)
+    }
+  }
+</script>
+<svelte:window on:keyup={onCloseHandler} />
+<section class="modal primary-color" transition:fly={{delay:0,duration:500,x:-1000}}>
+<div class="modal__header primary-color">
+  <button on:click={onCloseHandler}>
+    <Icon {...iconProps} />
+  </button>
+    <h2 class="modal__header__title font-header--r">{title}</h2>
+</div>
+<slot name="main-content"></slot>
+<slot name="footer"></slot>
 </section>
 
 <style lang="scss">
   .modal {
     position: fixed;
-    top:0;
-    bottom:0;
     right:0;
     left:0;
-    z-index: 999999;
+    top:0;
+    bottom:0;
     display: grid;
-    place-content: center;
-    &__cta {
+    grid-template-rows: repeat(3,min-content);
+
+    &__header {
+      display: flex;
+      align-items: center;
+      gap:3rem;
       padding:1.6rem 3.2rem;
     }
-    &__draggable {
-      cursor: grab;
-    }
+
   }
 </style>

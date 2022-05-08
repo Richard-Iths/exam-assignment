@@ -52,7 +52,7 @@ pub fn create_child_window(id: String, app: AppHandle) {
   use tauri::{window::WindowBuilder, WindowUrl};
   #[cfg(any(windows, target_os = "macos"))]
   let main = app.get_window("main").unwrap();
-  let url = std::path::PathBuf::from("/orders");
+  let url = std::path::PathBuf::from("tauri://orders");
   let child = WindowBuilder::new(&app, id, WindowUrl::App(url))
     .title("Child")
     .inner_size(400.0, 300.0);
