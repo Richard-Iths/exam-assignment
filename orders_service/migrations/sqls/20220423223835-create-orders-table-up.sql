@@ -1,7 +1,8 @@
-CREATE TYPE order_status AS ENUM ('pending','pending_invoice','complete');
+CREATE TYPE order_status AS ENUM ('pending','in_progress','complete');
 CREATE TABLE orders (
   id SERIAL PRIMARY KEY,
   order_numb SERIAL UNIQUE NOT NULL,
+  description TEXT NOT NULL,
   emp_ref INTEGER,
   customer_ref INTEGER,
   status order_status DEFAULT 'pending' NOT NULL,

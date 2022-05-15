@@ -3,11 +3,12 @@ import { JwtPayload } from 'jsonwebtoken'
 
 export enum OrderStatus {
   PENDING = 'pending',
-  PENDING_INVOICE = 'pending_invoice',
+  IN_PROGRESS = 'in_progress',
   COMPLETE = 'complete',
 }
 export interface IOrder {
   id: number
+  description: string
   orderNumb: number
   customerRef: number
   empRef: number

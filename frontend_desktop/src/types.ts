@@ -4,6 +4,7 @@ export enum TauriCommands {
   IS_AUTHENTICATED = "is_authenticated",
   AUTHENTICATE_USER = "authenticate_user",
   GET_ORDERS = "get_orders",
+  GET_USERS = "get_users",
 }
 
 export type AppState =
@@ -35,38 +36,39 @@ export enum AppRoutes {
 }
 export enum OrderStatus {
   PENDING = "pending",
-  IN_PROGRESS = "inProgress",
+  IN_PROGRESS = "in_progress",
+  COMPLETE = "complete",
+}
+
+export interface OrderArt {
+  id: number;
+  description: string;
+  price: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Order {
   id: number;
   orderNumb: number;
   description: string;
-  customerRef?: string;
-  empRef?: string;
+  customerRef?: number;
+  empRef?: number;
   status: OrderStatus;
   createdAt: string;
   updatedAt: string;
+  orderRows: OrderRow[];
 }
 
 export interface OrderRow {
   id: number;
-  art: string;
-  description: string;
-  price: number;
+  orderArtId: number;
+  orderId: number;
   amount: number;
   total: number;
-  inStock: boolean;
+  // inStock: boolean;
+  orderArt: OrderArt;
 }
-
-export const OrderRowMapping: Record<keyof Omit<OrderRow, "id">, string> = {
-  art: "art",
-  amount: "amount",
-  description: "description",
-  inStock: "in stock",
-  price: "price",
-  total: "total",
-};
 
 export enum UserRoles {
   ADMIN = "admin",

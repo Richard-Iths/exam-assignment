@@ -49,7 +49,6 @@ pub fn init_application_config<'a>(
     Ok(JsonResponse::new("config file initialized"))
   }
 }
-
 #[tauri::command]
 pub fn add_application_config(
   new_config: AppConfig,

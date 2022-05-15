@@ -1,4 +1,5 @@
 use crate::api::api_request;
+use crate::models::json_response::JsonResponse;
 use crate::models::users::User;
 use crate::AppConfigState;
 use serde::{Deserialize, Serialize};
@@ -9,11 +10,15 @@ use tauri::State;
 pub struct UsersState(pub Mutex<Vec<User>>);
 
 #[tauri::command]
-pub async fn init_users(
+pub async fn get_users(
   app_config: State<'_, AppConfigState>,
   users_state: State<'_, UsersState>,
-) -> Result<Vec<User>, String> {
+) -> Result<JsonResponse<Vec<User>>, String> {
   use api_request::{get, ApiEndpoint};
+  let mut users = users_state.0.lock().unwrap().clone();
+  if users.len() > 0 {
+    return Ok(JsonResponse::new(users));
+  }
   let config = app_config.0.lock().unwrap().clone();
   let res = get(ApiEndpoint::GetAllUsers, None, config, None).await;
 
@@ -21,8 +26,7 @@ pub async fn init_users(
     Ok(res_body) => res_body.data,
     Err(_) => return Err("something went wrong".to_owned()),
   };
-  println!("data is {:?}", data);
-  let users: Vec<User> = serde_json::from_value(data).unwrap();
+  users = serde_json::from_value(data).unwrap();
   *users_state.0.lock().unwrap() = users.clone();
-  Ok(users)
+  Ok(JsonResponse::new(users))
 }

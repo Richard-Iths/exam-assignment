@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from 'express'
 import log from '../utils/logger'
 import { initOrdersRepository } from '../repositories/'
 import { RequestWithExtra } from '../types'
+import { CreateOrderDto, PatchOrderDto } from '../models/dtos/orders'
 export const getAllOrders = async (_: Request, res: Response, next: NextFunction) => {
   try {
     log.info('controllers/orders/getAllOrders', 'getting all orders')
     const ordersRepository = await initOrdersRepository()
-    const orders = await ordersRepository.find({ relations: { orderRows: {} } })
+    const orders = await ordersRepository.find({ relations: { orderRows: { orderArt: {} } } })
     return res.json({ data: [...orders] })
   } catch (err) {
     log.error('controllers/orders/getAllOrders', 'error when fetching orders', err)
@@ -16,10 +17,10 @@ export const getAllOrders = async (_: Request, res: Response, next: NextFunction
 
 export const postNewOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { customerRef, status } = req.body
-    log.info('controllers/orders/postNewOrder', 'creating new order with', { customerRef, status })
+    const dto = req.body as CreateOrderDto
+    log.info('controllers/orders/postNewOrder', 'creating new order with', { ...dto })
     const ordersRepository = await initOrdersRepository()
-    const { raw } = await ordersRepository.insert({ customerRef, status })
+    const { raw } = await ordersRepository.insert({ ...dto })
     const order = await ordersRepository.findOneBy({ id: raw[0].id })
     if (!order) {
       return res.status(406).json({ data: { id: raw[0].id } })
@@ -32,7 +33,7 @@ export const postNewOrder = async (req: Request, res: Response, next: NextFuncti
 }
 
 export const patchOrder = async (req: RequestWithExtra, res: Response, next: NextFunction) => {
-  const dto = req.body as { empRef: number }
+  const dto = req.body as PatchOrderDto
   const id = +req.params.id
   const user = req.user!
   if (user.role !== 'admin' || !dto.empRef) {

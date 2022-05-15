@@ -30,6 +30,7 @@ impl<T> JsonErrorResponse<T> {
 
 impl From<serde_json::Error> for JsonErrorResponse<String> {
   fn from(err: serde_json::Error) -> Self {
+    println!("error: {:?}", err);
     let error = ErrorHandler {
       error: ApplicationErrorCode::SerdeJson(err),
     };
@@ -39,12 +40,14 @@ impl From<serde_json::Error> for JsonErrorResponse<String> {
 
 impl From<ErrorHandler> for JsonErrorResponse<String> {
   fn from(err: ErrorHandler) -> Self {
+    println!("error: {:?}", err);
     err.match_error()
   }
 }
 
 impl From<tauri::api::Error> for JsonErrorResponse<String> {
   fn from(err: tauri::api::Error) -> Self {
+    println!("error: {:?}", err);
     let error = ErrorHandler {
       error: ApplicationErrorCode::TauriApiError(err),
     };

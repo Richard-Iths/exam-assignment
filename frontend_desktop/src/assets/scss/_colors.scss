@@ -63,7 +63,8 @@ $colors: (
   color: getColor("accentDark");
 }
 :global(.hover--light-color:hover) {
-  color: getColor("primary");
+  background-color: getColor("primary");
+  color: getColor("primaryDark");
 }
 :global(.icon-color--info) {
   color: getColor("utilityInfo");

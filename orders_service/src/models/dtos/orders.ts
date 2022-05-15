@@ -1,6 +1,6 @@
-import { Contains, IsEnum, IsInt, IsOptional, IsIn } from 'class-validator'
+import { Contains, IsEnum, IsInt, IsOptional, IsIn, IsString, MinLength } from 'class-validator'
 import { IOrder, OrderStatus } from '../../types'
-type BaseOrderDto = Pick<IOrder, 'customerRef' | 'status' | 'empRef'>
+type BaseOrderDto = Pick<IOrder, 'customerRef' | 'status' | 'empRef' | 'description'>
 export class CreateOrderDto implements BaseOrderDto {
   @IsInt()
   customerRef: number
@@ -10,6 +10,9 @@ export class CreateOrderDto implements BaseOrderDto {
   @IsInt()
   @IsOptional()
   empRef: number
+  @IsString()
+  @MinLength(5)
+  description: string
 }
 
 export class PatchOrderDto implements BaseOrderDto {
@@ -22,4 +25,8 @@ export class PatchOrderDto implements BaseOrderDto {
   @IsInt()
   @IsOptional()
   empRef: number
+  @IsString()
+  @IsOptional()
+  @MinLength(5)
+  description: string
 }

@@ -1,14 +1,19 @@
 <script lang="ts">
-import {Order, TauriCommands} from "@src/types"
-import type {IJsonErrorResponse, IJsonResponse} from '@lib/models'
+import {Order, TauriCommands, User} from "@src/types"
+import type {IJsonResponse} from '@lib/models'
 import BaseModal,{Props as IBaseModal} from "@src/lib/components/modal/BaseModal.svelte";
 import OrdersTable from "@src/lib/components/orders/tables/OrderTable.svelte";
 import {initOrders} from '@lib/stores/orders'
 import { onMount } from "svelte";
 import { invoke } from "@tauri-apps/api/tauri";
 import Icon,{Props as IIcon,IconName,IconSize} from "@components/ui/icons/Icon.svelte";
+import { initUsers } from "@src/lib/stores/users";
 const baseModalProps : IBaseModal = {
-  title:"Orders"
+  title:"Orders",
+  transition: {
+    delay:0,
+    direction:"right"
+  }
 }
 const addIconProps : IIcon = {
   iconName:IconName.ADD_ICON,
@@ -16,10 +21,11 @@ const addIconProps : IIcon = {
 }
 onMount(async () => {
   try {
-      const res = await invoke<IJsonResponse<Order[]>>(TauriCommands.GET_ORDERS,{reQuery:false})
-      initOrders([...res.data])
+      const orders = await invoke<IJsonResponse<Order[]>>(TauriCommands.GET_ORDERS,{reQuery:false})
+      const users = await invoke<IJsonResponse<User[]>>(TauriCommands.GET_USERS)
+      initOrders([...orders.data])
+      initUsers([...users.data])
   } catch (err) {
-    console.log(err)
   }
 })
 </script>

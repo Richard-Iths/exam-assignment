@@ -2,6 +2,7 @@
   import { Router,Route} from "svelte-navigator";
   import appStore,{updateApp} from '@lib/stores/app'
   import Orders from '@views/Orders.svelte'
+  import Order from "@components/orders/modals/Order.svelte";
   import Invoices from '@views/Invoices.svelte'
   import Users from '@views/Users.svelte'
   import Header from "./lib/components/app/Header.svelte";
@@ -9,7 +10,7 @@
   import { invoke } from "@tauri-apps/api/tauri";
   import { TauriCommands,AppState } from "./types";
 import type { IJsonErrorResponse } from "@lib/models";
-import LoginForm from "./lib/components/app/login/LoginForm.svelte";
+import LoginForm from "@components/app/login/LoginForm.svelte";
  
   onMount(async () => {
     try {
@@ -31,9 +32,13 @@ import LoginForm from "./lib/components/app/login/LoginForm.svelte";
 <Router >
   <Header/>
 	<main>
-    <Route path="invoices" component={Invoices} />
-		<Route path="orders" component={Orders} />
-		<Route path="users" component={Users} />
+    <!-- <Route path="invoices" component={Invoices} /> -->
+    <Route path="orders/:id" let:params>
+      <Order orderId={params.id} />
+    </Route>
+    <Route path="/orders" component={Orders} />
+
+		<!-- <Route path="users" component={Users} /> -->
   </main>
 </Router>
 {#if $appStore.state === "unauthorized" }

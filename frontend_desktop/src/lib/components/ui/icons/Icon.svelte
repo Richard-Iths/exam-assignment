@@ -11,10 +11,11 @@
     INVOICES_ICON="ri-hand-coin-fill",
     CLOSE_ICON="ri-close-fill",
     BACK_ICON="ri-arrow-left-circle-fill",
-    ADD_ICON="ri-add-fill"
+    ADD_ICON="ri-add-fill",
+    ARROW_DOWN_ICON="ri-arrow-down-s-fill"
   }
   export interface Props {
-    iconName:IconName,
+    iconName:IconName
     iconSize:IconSize
   }
 </script>

@@ -8,6 +8,8 @@ export default class Order implements IOrder {
   id: number
   @Column({ type: 'int', unique: true, name: 'order_numb' })
   orderNumb: number
+  @Column({ type: 'text' })
+  description: string
   @Column({ type: 'int', name: 'emp_ref' })
   empRef: number
   @Column({ type: 'int', name: 'customer_ref' })
